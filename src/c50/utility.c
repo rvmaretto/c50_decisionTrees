@@ -539,27 +539,8 @@ FILE *GetFile(String Extension, String RW)
 /*	Determine total elapsed time so far.				 */
 /*									 */
 /*************************************************************************/
-
-
-//#include <sys/time.h>
-#include <winsock.h>
-#include <stdbool.h>
-
-struct timezone2 {
-    __int32 tz_minuteswest; /* minutes W of Greenwich */
-    bool tz_dsttime;     /* type of dst correction */
-};
-
-double  ExecTime()
-/*      --------  */
-{
-    /*struct timeval	TV;
-    struct timezone2 TZ = { 0, 0 };
-
-    // gettimeofday(&TV, &TZ);
-    GetLocalTime(&TV, &TZ);
-    return TV.tv_sec + TV.tv_usec / 1000000.0;*/
-    return 0.0;
+double  ExecTime() {
+    return  GetSystemClock() / 100000.0;
 }
 
 
