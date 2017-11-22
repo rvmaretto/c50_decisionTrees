@@ -1,0 +1,23 @@
+|Arquivo de Treinamento para Arvore de Decisao.
+|relation C:\Tutor_10aulas\springdb/Curso/Brasilia/Region.amo
+
+class.     | the target attribute
+
+Area:     continuous.
+Perimetro:    continuous.
+NPixel:     continuous.
+Minimo:     continuous.
+Maximo:     continuous.
+Amplitude:    continuous.
+Media:     continuous.
+Variancia:    continuous.
+DesvioPadrao:   continuous.
+Assimetria:     continuous.
+Curtose:    continuous.
+CoefVariacao:    continuous.
+Mediana:    continuous.
+Moda:     continuous.
+
+class:     agua, solo_exposto, urbano, vegetacao.
+
+ID:      label.
