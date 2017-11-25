@@ -7,4 +7,11 @@
 
 double GetSystemClock();
 
+void SetRunTimeStackSize(unsigned long int iValue_KB);
+
+#ifdef WIN32
+#include <windows.h>
+void ErrorExit(LPTSTR lpszFunction);
+#endif
+
 #endif  // AUXILIARYFUNCTIONS_H_

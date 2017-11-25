@@ -49,9 +49,8 @@
 			ArgOK = true
 
 
-int main(int Argc, char *Argv[])
+void C50_classification() {
 /*  ----  */
-{
     int			o;
     extern String	OptArg, Option;
     char		*EndPtr;
@@ -76,7 +75,7 @@ int main(int Argc, char *Argv[])
 
  //   setrlimit(RLIMIT_STACK, &RL);
 
-    // SetRunTimeStackSize(20 * 1024);
+    SetRunTimeStackSize(20 * 1024);
 
     /*  Check for output to be saved to a file  */
 

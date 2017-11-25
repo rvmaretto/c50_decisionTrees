@@ -33,6 +33,7 @@
 
 #include "defns.i"
 #include "extern.i"
+#include "../auxiliaryFunctions/auxiliaryFunctions.h"
 
 
 #define  NAME T_C50
