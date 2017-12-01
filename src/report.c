@@ -213,19 +213,19 @@ int main(int argc, char *argv[])
 
 
 char
-     *StdP_[]  = {	"    Decision Tree   ",
+     *StdP[]  = {	"    Decision Tree   ",
 			"  ----------------  ",
 			"    Size    Errors  " },
 
-     *StdPC_[] = {	"        Decision Tree      ",
+     *StdPC[] = {	"        Decision Tree      ",
 			"  -----------------------  ",
 			"    Size    Errors   Cost  " },
 
-     *Extra_[] = {	"        Rules     ",
+     *Extra[] = {	"        Rules     ",
 			"  ----------------",
 			"      No    Errors" },
 
-     *ExtraC_[]= {	"           Rules         ",
+     *ExtraC[]= {	"           Rules         ",
 			"  -----------------------",
 			"      No    Errors   Cost" };
 
@@ -257,10 +257,10 @@ void PrintSummary(float **Val, int No, char *Title)
 	}
 
 	printf("%s\n", ( Composite ?
-			 ( Costs ? ExtraC_[i] : Extra_[i] ) :
+			 ( Costs ? ExtraC[i] : Extra[i] ) :
 			 Rules ?
-			 ( Costs ? ExtraC_[i] : Extra_[i] ) :
-			 ( Costs ? StdPC_[i] : StdP_[i] ) ));
+			 ( Costs ? ExtraC[i] : Extra[i] ) :
+			 ( Costs ? StdPC[i] : StdP[i] ) ));
     }
     printf("\n");
 

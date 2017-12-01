@@ -2,9 +2,9 @@
 // Based on C5.0 GPL Edition provided by Rulequest Research Pty Ltd.
 //===================================================================
 
-#ifndef C50_LIBRARY_HPP_
-#define C50_LIBRARY_HPP_
+#ifndef C50_MAIN_HPP_
+#define C50_MAIN_HPP_
 
-void C50_classification();
+int c50main();
 
-#endif  // C50_LIBRARY_HPP_
+#endif  // C50_MAIN_HPP_
