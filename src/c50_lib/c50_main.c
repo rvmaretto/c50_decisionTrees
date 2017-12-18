@@ -32,12 +32,13 @@
 /*************************************************************************/
 
 
-#include "defns.i"
-#include "extern.i"
+#include "defns.h"
+#include "extern.h"
 #include <signal.h>
 
 #include <io.h>
 #include <time.h>
+#include <stdint.h>
 #include "../auxiliaryFunctions/resource.h"
 #include "../auxiliaryFunctions/auxiliaryFunctions.h"
 #include "c50_main.h"
@@ -80,8 +81,19 @@ int c50main()
     if (!(F = GetFile(".names", "r"))) Error(NOFILE, "", "");
     GetNames(F);
 
+    if (ErrMsgs > 0)
+        return 1;
+
     if (ClassAtt)
     {
+        /// @TESTING: Problem seems to be the Of variable.
+        /*printf("%d\n", ClassAtt);
+        printf("%s\n", AttName[ClassAtt]);
+        char *outputString = closeOf();
+        printf("---------------\n");
+        printf("%s\n", outputString);
+        printf("----------------\n");*/
+        // ----- Ending TESTING - Remove lines above
         fprintf(Of, T_ClassVar, AttName[ClassAtt]);
     }
 

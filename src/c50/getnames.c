@@ -32,11 +32,15 @@
 /*************************************************************************/
 
 
-#include "defns.i"
-#include "extern.i"
+#include "defns.h"
+#include "extern.h"
 
 #include <sys/types.h>
 #include <sys/stat.h>
+#include <stdint.h>
+
+#include "../c50_lib/Rbased/transform.h"
+#include "../c50_lib/Rbased/redefine.h"
 
 #define	MAXLINEBUFFER	10000
 int	Delimiter;
@@ -413,7 +417,7 @@ void GetNames(FILE *Nf)
 
     fclose(Nf);
 
-    if ( ErrMsgs > 0 ) Goodbye(1);
+    // if ( ErrMsgs > 0 ) Goodbye(1);
 }
 
 
@@ -616,7 +620,7 @@ void ListAttsUsed()
     {
 	if ( DefOp(D[e]) == OP_ATT )
 	{
-	    Att = (Attribute) DefSVal(D[e]);
+	    Att = (Attribute) (intptr_t) DefSVal(D[e]);
 	    if ( ! DefUses[Att] )
 	    {
 		DefUses[Att] = true;

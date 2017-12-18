@@ -33,9 +33,11 @@
 /*************************************************************************/
 
 
-#include "defns.i"
-#include "extern.i"
+#include "defns.h"
+#include "extern.h"
 
+#include "../c50_lib/Rbased/transform.h"
+#include "../c50_lib/Rbased/redefine.h"
 
 float	*DeltaErrs=Nil,	/* DeltaErrs[r]	 = change attributable to rule r or
 					   realisable if rule r included */
@@ -389,6 +391,8 @@ float CondBits(Condition C)
 
 	    return AttTestBits + Code;
     }
+
+    return 0.0;
 }
 
 
@@ -516,10 +520,12 @@ void CoverClass(ClassNo Target)
 /*	will have about the same error rate as the pruned tree, so	 */
 /*	is approx. the sum of the corresponding messages.		 */
 /*									 */
+/*	Message lengths are returned in units of 0.01			 */
+/*									 */
 /*************************************************************************/
 
 
-double MessageLength(RuleNo NR, double RuleBits, float Errs)
+int MessageLength(RuleNo NR, double RuleBits, float Errs)
 /*  -------------  */
 {
     return
@@ -547,7 +553,7 @@ void HillClimb()
     int		j;
     CaseCount	Errs;
     double	RuleBits=0;
-    double	LastCost=1E99, CurrentCost, AltCost, NewCost;
+    int		LastCost=1E9, CurrentCost, AltCost, NewCost;
     Boolean	DeleteOnly=false;
 
     ForEach(r, 1, NRules)

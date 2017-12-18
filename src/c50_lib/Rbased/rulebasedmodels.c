@@ -263,8 +263,8 @@ char *closeOf()
  * That's why we can't have a function that initialize the
  * jmp_buf, but must use a macro instead.
  */
-void rbm_exit(int status)
-{
-    /* This doesn't return */
-    longjmp(rbm_buf, status + JMP_OFFSET);
-}
+// void rbm_exit(int status)
+// {
+//    /* This doesn't return */
+//    longjmp(rbm_buf, status + JMP_OFFSET);
+// }

@@ -1,0 +1,28 @@
+diagnosis.                     | the target attribute
+
+age:                           continuous.
+sex:                           M, F.
+on thyroxine:                  f, t.
+query on thyroxine:            f, t.
+on antithyroid medication:     f, t.
+sick:                          f, t.
+pregnant:                      f, t.
+thyroid surgery:               f, t.
+I131 treatment:                f, t.
+query hypothyroid:             f, t.
+query hyperthyroid:            f, t.
+lithium:                       f, t.
+tumor:                         f, t.
+goitre:                        f, t.
+hypopituitary:                 f, t.
+psych:                         f, t.
+TSH:                           continuous.
+T3:                            continuous.
+TT4:                           continuous.
+T4U:                           continuous.
+FTI:=                          TT4 / T4U.
+referral source:               WEST, STMW, SVHC, SVI, SVHD, other.
+
+diagnosis:                     primary, compensated, secondary, negative.
+
+ID:                            label.

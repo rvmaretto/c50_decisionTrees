@@ -2,14 +2,15 @@
 // Based on C5.0 GPL Edition provided by Rulequest Research Pty Ltd.
 //===================================================================
 
+#include <stdio.h>
 #include "c50_LibEntry.h"
 #include "./Rbased/strbuf.h"
 #include "./Rbased/rulebasedmodels.h"
 #include "./Rbased/redefine.h"
 
-static void c50(char **namesv,
-    char **datav,
-    char **costv,
+void c50(const char **namesv,
+    const char **datav,
+    const char **costv,
     int *subset,
     int *rules,
     int *utility,
@@ -29,7 +30,16 @@ static void c50(char **namesv,
     int val;  /* Used by setjmp/longjmp for implementing rbm_exit */
 
     // Announce ourselves for testing
-    // Rprintf("c50 called\n");
+    printf("----------------\n");
+    printf("c50 called\n");
+    /*printf("----------------\n");
+    printf("Names FILE: \n");
+    printf(*namesv);
+
+    printf("----------------\n");
+    printf("Data File: \n");
+    printf(*datav);
+    printf("----------------\n");*/
 
     // Initialize the globals to the values that the c50
     // program would have at the start of execution
@@ -60,7 +70,7 @@ static void c50(char **namesv,
 
     // Register this strbuf using the name "undefined.names"
     if (rbm_register(sb_names, "undefined.names", 0) < 0) {
-        error("undefined.names already exists");
+        perror("undefined.names already exists");
     }
 
     // Create a strbuf using *datav and register it as "undefined.data"
@@ -68,7 +78,7 @@ static void c50(char **namesv,
     // XXX why is sb_datav copied? was that part of my debugging?
     // XXX or is this the cause of the leak?
     if (rbm_register(strbuf_copy(sb_datav), "undefined.data", 0) < 0) {
-        error("undefined data already exists");
+        perror("undefined data already exists");
     }
 
     // Create a strbuf using *costv and register it as "undefined.costs"
@@ -77,7 +87,7 @@ static void c50(char **namesv,
         STRBUF *sb_costv = strbuf_create_full(*costv, strlen(*costv));
         // XXX should sb_costv be copied?
         if (rbm_register(sb_costv, "undefined.costs", 0) < 0) {
-            error("undefined.cost already exists");
+            perror("undefined.cost already exists");
         }
     }
     else {
@@ -92,7 +102,14 @@ static void c50(char **namesv,
 
         // Real work is done here
         // Rprintf("Calling c50main\n");
-        c50main();
+        if (c50main() != 0) {
+            char *outputString = closeOf();
+            // char *output = calloc(strlen(outputString) + 1, sizeof(char));
+            // strcpy(&output, &outputString);
+            *outputv = outputString;
+            return;
+        }
+
 
         // Rprintf("c50main finished\n");
 
@@ -101,8 +118,8 @@ static void c50(char **namesv,
             STRBUF *treebuf = rbm_lookup("undefined.tree");
             if (treebuf != NULL) {
                 char *treeString = strbuf_getall(treebuf);
-                char *treeObj = R_alloc(strlen(treeString) + 1, 1);
-                strcpy(treeObj, treeString);
+                char *treeObj = calloc(strlen(treeString) + 1, sizeof(char));
+                strcpy(&treeObj, &treeString);
 
                 // I think the previous value of *treev will be garbage collected
                 *treev = treeObj;
@@ -117,8 +134,8 @@ static void c50(char **namesv,
             STRBUF *rulesbuf = rbm_lookup("undefined.rules");
             if (rulesbuf != NULL) {
                 char *rulesString = strbuf_getall(rulesbuf);
-                char *rulesObj = R_alloc(strlen(rulesString) + 1, 1);
-                strcpy(rulesObj, rulesString);
+                char *rulesObj = calloc(strlen(rulesString) + 1, sizeof(char));
+                strcpy(&rulesObj, &rulesString);
 
                 // I think the previous value of *rulesv will be garbage collected
                 *rulesv = rulesObj;
@@ -130,13 +147,13 @@ static void c50(char **namesv,
         }
     }
     else {
-        Rprintf("c50 code called exit with value %d\n", val - JMP_OFFSET);
+        fprintf("c50 code called exit with value %d\n", val - JMP_OFFSET);
     }
 
     // Close file object "Of", and return its contents via argument outputv
     char *outputString = closeOf();
-    char *output = R_alloc(strlen(outputString) + 1, 1);
-    strcpy(output, outputString);
+    char *output = calloc(strlen(outputString) + 1, sizeof(char));
+    strcpy(&output, &outputString);
     *outputv = output;
 
     // Deallocates memory allocated by NewCase
@@ -173,31 +190,31 @@ static void predictions(char **casev,
 
     STRBUF *sb_cases = strbuf_create_full(*casev, strlen(*casev));
     if (rbm_register(sb_cases, "undefined.cases", 0) < 0) {
-        error("undefined.cases already exists");
+        perror("undefined.cases already exists");
     }
 
     STRBUF *sb_names = strbuf_create_full(*namesv, strlen(*namesv));
     if (rbm_register(sb_names, "undefined.names", 0) < 0) {
-        error("undefined.names already exists");
+        perror("undefined.names already exists");
     }
 
     if (strlen(*treev)) {
         STRBUF *sb_treev = strbuf_create_full(*treev, strlen(*treev));
         /* XXX should sb_treev be copied? */
         if (rbm_register(sb_treev, "undefined.tree", 0) < 0) {
-            error("undefined.tree already exists");
+            perror("undefined.tree already exists");
         }
     }
     else if (strlen(*rulesv))  {
         STRBUF *sb_rulesv = strbuf_create_full(*rulesv, strlen(*rulesv));
         /* XXX should sb_rulesv be copied? */
         if (rbm_register(sb_rulesv, "undefined.rules", 0) < 0) {
-            error("undefined.rules already exists");
+            perror("undefined.rules already exists");
         }
         setrules(1);
     }
     else {
-        error("either a tree or rules must be provided");
+        perror("either a tree or rules must be provided");
     }
 
     // Create a strbuf using *costv and register it as "undefined.costs"
@@ -206,7 +223,7 @@ static void predictions(char **casev,
         STRBUF *sb_costv = strbuf_create_full(*costv, strlen(*costv));
         // XXX should sb_costv be copied?
         if (rbm_register(sb_costv, "undefined.costs", 0) < 0) {
-            error("undefined.cost already exists");
+            perror("undefined.cost already exists");
         }
     }
     else {
@@ -225,12 +242,12 @@ static void predictions(char **casev,
         // Rprintf("predict finished\n\n");
     }
     else {
-        Rprintf("predict code called exit with value %d\n\n", val - JMP_OFFSET);
+        fprintf("predict code called exit with value %d\n\n", val - JMP_OFFSET);
     }
 
     // Close file object "Of", and return its contents via argument outputv
     char *outputString = closeOf();
-    char *output = R_alloc(strlen(outputString) + 1, 1);
+    char *output = malloc(strlen(outputString) + 1, 1);
     strcpy(output, outputString);
     *outputv = output;
 

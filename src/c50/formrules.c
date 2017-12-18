@@ -39,8 +39,11 @@
 /*************************************************************************/
 
 
-#include "defns.i"
-#include "extern.i"
+#include "defns.h"
+#include "extern.h"
+
+#include "../c50_lib/Rbased/transform.h"
+#include "../c50_lib/Rbased/redefine.h"
 
 double		*Errors=Nil,		/* [Condition] */
 		*Total=Nil;		/* [Condition] */

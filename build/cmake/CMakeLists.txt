@@ -17,29 +17,34 @@ set(REPORT_SRC_FILES  ${C50_SRC_DIR}/report.c)
 file(GLOB C50_SRC_FILES ${C50_SRC_DIR}/c50/*.c)
 file(GLOB C50_SRC_FILES_AUX ${C50_SRC_DIR}/auxiliaryFunctions/*.c)
 file(GLOB C50_HDR_FILES ${C50_SRC_DIR}/auxiliaryFunctions/*.h)
-file(GLOB C50_PREP_FILES ${C50_SRC_DIR}/*.i)
+file(GLOB C50_PREP_FILES ${C50_SRC_DIR}/*.h)
 
 file(GLOB C50LIB_SRC_FILES ${C50_SRC_DIR}/c50_lib/*.c)
 file(GLOB C50LIB_HDR_FILES ${C50_SRC_DIR}/c50_lib/*.h)
 file(GLOB C50LIB_R_SRC_FILES ${C50_SRC_DIR}/c50_lib/Rbased/*.c)
 file(GLOB C50LIB_R_HDR_FILES ${C50_SRC_DIR}/c50_lib/Rbased/*.h)
 
+if(MSVC)
+    add_definitions(/MP)
+    set(CMAKE_DEBUG_POSTFIX "d")
+endif()
+
 # Creating source groups for IDEs
 source_group("Source Files"  FILES ${C50_SRC_FILES} ${C50_SRC_FILES_AUX} ${C50LIB_SRC_FILES})
-source_group("Source Files\\Rbased" ${C50LIB_R_SRC_FILES})
+source_group("Source Files\\Rbased" FILES ${C50LIB_R_SRC_FILES})
 source_group("Header Files"  FILES ${C50_HDR_FILES} ${C50LIB_HDR_FILES})
-source_group("Header Files\\Rbased" ${C50LIB_R_HDR_FILES})
-source_group("Preprocessed Files"  FILES ${C50_PREP_FILES})
+source_group("Header Files\\Rbased" FILES ${C50LIB_R_HDR_FILES})
+source_group("Preprocessed Files" FILES FILES ${C50_PREP_FILES})
 
 # @TODO(Raian): Verify here what files are really necessary to each component (C50 and Report)
 # @TODO(Raian): Refactor the whole CMake Code
-set(C50_FILES ${C50_SRC_FILES} ${C50_SRC_FILES_AUX} ${C50_HDR_FILES} ${C50_PREP_FILES})
+set(C50_FILES ${C50_SRC_FILES} ${C50_SRC_FILES_AUX} ${C50_HDR_FILES} ${C50_PREP_FILES} ${C50LIB_R_SRC_FILES} ${C50LIB_R_HDR_FILES})
 set(REPORT_FILES ${REPORT_SRC_FILES})# ${C50_HDR_FILES} ${C50_PREP_FILES})
 
-set(C50LIB_FILES ${C50LIB_SRC_FILES} ${C50LIB_HDR_FILES} ${C50_SRC_FILES} ${C50_SRC_FILES_AUX} ${C50_HDR_FILES} ${C50_PREP_FILES})
+set(C50LIB_FILES ${C50LIB_SRC_FILES} ${C50LIB_HDR_FILES} ${C50_SRC_FILES} ${C50_SRC_FILES_AUX} ${C50_HDR_FILES} ${C50_PREP_FILES} ${C50LIB_R_SRC_FILES} ${C50LIB_R_HDR_FILES})
 
 add_executable(c50 ${C50_FILES})
 
 add_executable(report ${REPORT_FILES})
 
-add_library(c50_lib SHARED ${C50LIB_FILES})
+add_library(c50_lib STATIC ${C50LIB_FILES})

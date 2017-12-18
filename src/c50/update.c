@@ -32,9 +32,11 @@
 /*************************************************************************/
 
 
-#include "defns.i"
-#include "extern.i"
+#include "defns.h"
+#include "extern.h"
 
+#include "../c50_lib/Rbased/transform.h"
+#include "../c50_lib/Rbased/redefine.h"
 
 FILE	*Uf=0;			/* File to which update info written  */
 

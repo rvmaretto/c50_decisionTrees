@@ -31,10 +31,14 @@
 /*									 */
 /*************************************************************************/
 
-#include "defns.i"
-#include "extern.i"
+#include "defns.h"
+#include "extern.h"
 #include "../auxiliaryFunctions/auxiliaryFunctions.h"
 
+#include <stdint.h>
+
+#include "../c50_lib/Rbased/transform.h"
+#include "../c50_lib/Rbased/redefine.h"
 
 #define  NAME T_C50
 
@@ -91,6 +95,29 @@ char ProcessOption(int Argc, char *Argv[], char *Options)
     return '?';
 }
 
+char PredictProcessOption(int Argc, char *Argv[], char *Options)
+/*   -------------  */
+{
+    int		i;
+    static int	OptNo=1;
+
+    if ( OptNo >= Argc ) return '\00';
+
+    if ( *(Option = Argv[OptNo++]) != '-' ) return '?';
+
+    for ( i = 0 ; Options[i] ; i++ )
+    {
+	if ( Options[i] == Option[1] )
+	{
+	    OptArg = (char *) ( Options[i+1] != '+' ? Nil :
+				Option[2] ? Option+2 :
+				OptNo < Argc ? Argv[OptNo++] : "0" );
+	    return Option[1];
+	}
+    }
+
+    return '?';
+}
 
 
 /*************************************************************************/
@@ -113,6 +140,7 @@ void *Pmalloc(size_t Bytes)
 
     Error(NOMEM, "", "");
 
+    return Nil;
 }
 
 
@@ -133,6 +161,7 @@ void *Prealloc(void *Present, size_t Bytes)
 
     Error(NOMEM, "", "");
 
+    return Nil;
 }
 
 
@@ -149,6 +178,7 @@ void *Pcalloc(size_t Number, unsigned int Size)
 
     Error(NOMEM, "", "");
 
+    return Nil;
 }
 
 
@@ -234,6 +264,12 @@ void FreeLastCase(DataRec Case)
 }
 
 
+void PredictFreeLastCase(DataRec DVec)
+/*   ------------  */
+{
+    free(&DVec[-1]);
+    IValsOffset = 0;
+}
 
 /*************************************************************************/
 /*									 */
@@ -392,7 +428,7 @@ void Error(int ErrNo, String S1, String S2)
 	    break;
 
 	case TOOMANYVALS:
-	    sprintf(Msg, E_TOOMANYVALS(S1, (int) (long) S2));
+	    sprintf(Msg, E_TOOMANYVALS(S1, (int) (intptr_t) S2));
 	    break;
 
 	case BADDISCRETE:
@@ -470,6 +506,22 @@ void Error(int ErrNo, String S1, String S2)
 	    sprintf(Msg, "    (%s `%s')\n", S1, S2);
 	    Quit = true;
 	    break;
+
+	case BADTRIALS:
+	    sprintf(Msg, S1 ,S2);
+	    Quit = true;
+	    break;
+
+	case BADOPTION:
+	    sprintf(Msg, S1 ,S2);
+	    Quit = true;
+	    break;
+
+	case OLDFORMAT:
+	    sprintf(Msg, S1 ,S2);
+	    Quit = true;
+	    break;
+	    
     }
 
     fprintf(Of, Buffer);
@@ -479,7 +531,10 @@ void Error(int ErrNo, String S1, String S2)
     if ( ErrMsgs == 10 )
     {
 	fprintf(Of,  T_ErrorLimit);
-	MaxCase--;
+	/* hooks.c/Error did not decrement MaxCase */
+	if (MODE == m_build) {
+	    MaxCase--;
+	}
 	Quit = true;
     }
 
@@ -828,6 +883,56 @@ void Check(float Val, float Low, float High)
 }
 
 
+/*************************************************************************/
+/*									 */
+/*	Deallocate the space used to perform classification		 */
+/*									 */
+/*************************************************************************/
+
+
+void FreeGlobals()
+/*   -----------  */
+{
+    /*  Free memory allocated for classifier  */
+
+    if ( RULES )
+    {
+	ForEach(Trial, 0, TRIALS-1)
+	{
+	     FreeRules(RuleSet[Trial]);
+	}
+	free(RuleSet);
+
+	classifyfreeglobals();
+	FreeUnlessNil(RulesUsed);
+	FreeUnlessNil(MostSpec);
+    }
+    else
+    {
+	ForEach(Trial, 0, TRIALS-1)
+	{
+	     FreeTree(Pruned[Trial]);
+	}
+	free(Pruned);
+    }
+
+    modelfilesfreeglobals();
+
+    /*  Free memory allocated for cost matrix  */
+
+    if ( MCost )
+    {
+        FreeVector((void **) MCost, 1, MaxClass);
+    }
+
+    /*  Free memory for names etc  */
+
+    FreeNames();
+    FreeUnlessNil(IgnoredVals);
+
+    free(ClassSum);
+    free(Vote);
+}
 
 
 
@@ -868,8 +973,7 @@ void Cleanup()
     FreeUnlessNil(Split);				Split = Nil;
     FreeUnlessNil(Used);				Used = Nil;
 
-    FreeUnlessNil(PropVal);				PropVal = Nil;
-							PropValSize = 0;
+    modelfilesfreeglobals();
 
     if ( RULES )
     {
@@ -919,8 +1023,7 @@ void Cleanup()
 
     FreeTreeData();
 
-    FreeUnlessNil(Active);				Active = Nil;
-							ActiveSpace = 0;
+    classifyfreeglobals();
 
     FreeUnlessNil(UtilErr);				UtilErr = Nil;
     FreeUnlessNil(UtilBand);				UtilBand = Nil;
