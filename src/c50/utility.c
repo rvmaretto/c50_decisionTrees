@@ -352,7 +352,6 @@ void Error(int ErrNo, String S1, String S2)
     Boolean	Quit=false, WarningOnly=false;
     char	Buffer[10000], *Msg=Buffer;
 
-
     if ( Of ) fprintf(Of, "\n");
 
     if ( ErrNo == NOFILE || ErrNo == NOMEM || ErrNo == MODELFILE )

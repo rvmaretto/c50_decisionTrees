@@ -43,13 +43,8 @@
 #include "../auxiliaryFunctions/auxiliaryFunctions.h"
 #include "c50_main.h"
 
-//#define SetFOpt(V)	V = strtod(OptArg, &EndPtr);\
-//			if ( ! EndPtr || *EndPtr != '\00' ) break;\
-//			ArgOK = true
-//#define SetIOpt(V)	V = strtol(OptArg, &EndPtr, 10);\
-//			if ( ! EndPtr || *EndPtr != '\00' ) break;\
-//			ArgOK = true
-
+#include "./Rbased/transform.h"
+#include "./Rbased/redefine.h"
 
 int c50main()
 /*  -------  */
@@ -65,7 +60,7 @@ int c50main()
     specificed in R
     */
 
-    KRInit = time(0) & 07777;
+    // KRInit = time(0) & 07777;
 
     PrintHeader("");
 

@@ -30,16 +30,8 @@ void c50(const char **namesv,
     int val;  /* Used by setjmp/longjmp for implementing rbm_exit */
 
     // Announce ourselves for testing
-    printf("----------------\n");
-    printf("c50 called\n");
     /*printf("----------------\n");
-    printf("Names FILE: \n");
-    printf(*namesv);
-
-    printf("----------------\n");
-    printf("Data File: \n");
-    printf(*datav);
-    printf("----------------\n");*/
+    printf("c50 called\n");*/
 
     // Initialize the globals to the values that the c50
     // program would have at the start of execution
@@ -118,11 +110,11 @@ void c50(const char **namesv,
             STRBUF *treebuf = rbm_lookup("undefined.tree");
             if (treebuf != NULL) {
                 char *treeString = strbuf_getall(treebuf);
-                char *treeObj = calloc(strlen(treeString) + 1, sizeof(char));
-                strcpy(&treeObj, &treeString);
+                // char *treeObj = calloc(strlen(treeString) + 1, sizeof(char));
+                // strcpy(&treeObj, &treeString);
 
                 // I think the previous value of *treev will be garbage collected
-                *treev = treeObj;
+                *treev = treeString;
             }
             else {
                 // XXX Should *treev be assigned something in this case?
@@ -134,11 +126,11 @@ void c50(const char **namesv,
             STRBUF *rulesbuf = rbm_lookup("undefined.rules");
             if (rulesbuf != NULL) {
                 char *rulesString = strbuf_getall(rulesbuf);
-                char *rulesObj = calloc(strlen(rulesString) + 1, sizeof(char));
-                strcpy(&rulesObj, &rulesString);
+                // char *rulesObj = calloc(strlen(rulesString) + 1, sizeof(char));
+                // strcpy(&rulesObj, &rulesString);
 
                 // I think the previous value of *rulesv will be garbage collected
-                *rulesv = rulesObj;
+                *rulesv = rulesString;
             }
             else {
                 // XXX Should *rulesv be assigned something in this case?
@@ -152,9 +144,9 @@ void c50(const char **namesv,
 
     // Close file object "Of", and return its contents via argument outputv
     char *outputString = closeOf();
-    char *output = calloc(strlen(outputString) + 1, sizeof(char));
-    strcpy(&output, &outputString);
-    *outputv = output;
+    // char *output = calloc(strlen(outputString) + 1, sizeof(char));
+    // strcpy(&output, &outputString);
+    *outputv = outputString;
 
     // Deallocates memory allocated by NewCase
     FreeCases();
@@ -163,20 +155,24 @@ void c50(const char **namesv,
     initglobals();
 }
 
-static void predictions(char **casev,
-    char **namesv,
+void predictions(const char **casev,
+    const char **namesv,
     char **treev,
     char **rulesv,
-    char **costv,
+    const char **costv,
     int *predv,  /* XXX predictions are character */
     double *confidencev,
     int *trials,
-    char **outputv)
-{
+    char **outputv) {
     int val;  /* Used by setjmp/longjmp for implementing rbm_exit */
 
     // Announce ourselves for testing
-    // Rprintf("predictions called\n");
+    printf("------------------------\n");
+    printf("predictions called\n");
+
+    printf("Tree: \n");
+    printf(*treev);
+    printf("\n---------------------------------\n");
 
     // Initialize the globals
     initglobals();
@@ -242,12 +238,12 @@ static void predictions(char **casev,
         // Rprintf("predict finished\n\n");
     }
     else {
-        fprintf("predict code called exit with value %d\n\n", val - JMP_OFFSET);
+        printf("predict code called exit with value %d\n\n", val - JMP_OFFSET);
     }
 
     // Close file object "Of", and return its contents via argument outputv
     char *outputString = closeOf();
-    char *output = malloc(strlen(outputString) + 1, 1);
+    char *output = calloc(strlen(outputString) + 1, 1);
     strcpy(output, outputString);
     *outputv = output;
 

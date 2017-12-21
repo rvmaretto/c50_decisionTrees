@@ -244,8 +244,9 @@ void GetNames(FILE *Nf)
     AttValName	  = AllocZero(AttCeiling, String *);
     SpecialStatus = AllocZero(AttCeiling, char);
     AttDef	  = AllocZero(AttCeiling, Definition);
-    AttDefUses	  = AllocZero(AttCeiling, Attribute *);
-
+    if (MODE == m_build) {
+	AttDefUses	  = AllocZero(AttCeiling, Attribute *);
+    }
     MaxAtt = 0;
     while ( ReadName(Nf, Buffer, 1000, ':') )
     {
@@ -303,14 +304,18 @@ void GetNames(FILE *Nf)
 	    Realloc(AttValName, AttCeiling, String *);
 	    Realloc(SpecialStatus, AttCeiling, char);
 	    Realloc(AttDef, AttCeiling, Definition);
-	    Realloc(AttDefUses, AttCeiling, Attribute *);
+	    if (MODE == m_build) {
+		Realloc(AttDefUses, AttCeiling, Attribute *);
+	    }
 	}
 
 	AttName[MaxAtt]       = strdup(Buffer);
 	SpecialStatus[MaxAtt] = Nil;
 	AttDef[MaxAtt]        = Nil;
 	MaxAttVal[MaxAtt]     = 0;
-	AttDefUses[MaxAtt]    = Nil;
+	if (MODE == m_build) {
+	    AttDefUses[MaxAtt]    = Nil;
+	}
 
 	if ( Delimiter == '=' )
 	{
@@ -320,7 +325,9 @@ void GetNames(FILE *Nf)
 	    }
 
 	    ImplicitAtt(Nf);
-	    ListAttsUsed();
+	    if (MODE == m_build) {
+		ListAttsUsed();
+	    }
 	}
 	else
 	{
@@ -570,7 +577,9 @@ void ExplicitAtt(FILE *Nf)
 	{
 	    SpecialStatus[MaxAtt] = 0;
 	}
-	if ( MaxAttVal[MaxAtt] > MaxDiscrVal ) MaxDiscrVal = MaxAttVal[MaxAtt];
+	if (MODE == m_build) {
+	    if ( MaxAttVal[MaxAtt] > MaxDiscrVal ) MaxDiscrVal = MaxAttVal[MaxAtt];
+	}
     }
 }
 
@@ -700,11 +709,15 @@ void FreeNames()
 		}
 
 		Free(AttDef[a]);
-		Free(AttDefUses[a]);
+		if (AttDefUses) {
+		    Free(AttDefUses[a]);
+		}
 	    }
 	}
 	Free(AttDef);					AttDef = Nil;
-	Free(AttDefUses);				AttDefUses = Nil;
+	if (AttDefUses) {
+	    Free(AttDefUses);				AttDefUses = Nil;
+	}
     }
 }
 

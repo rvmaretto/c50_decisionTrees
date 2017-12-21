@@ -100,12 +100,6 @@ char *	LastExt="";
 #define SAMPLEP		22
 #define INITP		23
 
-void modelfilesfreeglobals(void) {
-    FreeUnlessNil(PropVal);				
-    PropVal = Nil;
-    PropValSize = 0;
-}
-
 void modelfilesinit (void) {
     modelfilesfreeglobals();
     BINARY = false;
@@ -114,145 +108,9 @@ void modelfilesinit (void) {
     LastExt = "";
 }
 
-/*************************************************************************/
-/*									 */
-/*	Recover attribute values read with "discrete N"			 */
-/*									 */
-/*************************************************************************/
-
-
-void BinRecoverDiscreteNames()
-/*   -----------------------  */
-{
-    Attribute	Att;
-    DiscrValue	v;
-    int		Length;
-
-    ForEach(Att, 1, MaxAtt)
-    {
-        if (!StatBit(Att, DISCRETE)) continue;
-
-        StreamIn((char *)&MaxAttVal[Att], sizeof(int));
-
-        /*  Insert "N/A"  */
-
-        AttValName[Att][1] = strdup("N/A");
-        MaxAttVal[Att]++;
-
-        ForEach(v, 2, MaxAttVal[Att])
-        {
-            StreamIn((char *)&Length, sizeof(int));
-
-            AttValName[Att][v] = Alloc(Length, char);
-            StreamIn(AttValName[Att][v], Length);
-        }
-
-        /*  Invisible name for undefined values  */
-
-        AttValName[Att][MaxAttVal[Att] + 1] = "<other>";
-    }
-}
-
-void PredictReadHeader()
-/*   ---------  */
-{
-    Attribute	Att;
-    DiscrValue	v;
-    char	*p, Dummy;
-    int		Year, Month, Day;
-    FILE	*F;
-
-    while (true)
-    {
-        switch (ReadProp(&Dummy))
-        {
-        case ERRORP:
-            return;
-
-        case IDP:
-            /*  Recover year run and set base date for timestamps  */
-
-            if (sscanf(PropVal + strlen(PropVal) - 11,
-                "%d-%d-%d\"", &Year, &Month, &Day) == 3)
-            {
-                SetTSBase(Year);
-            }
-            break;
-
-        case COSTSP:
-            /*  Recover costs file used to generate model  */
-
-            if ((F = GetFile(".costs", "r")))
-            {
-                PredictGetMCosts(F);
-            }
-            break;
-
-        case ATTP:
-            Unquoted = RemoveQuotes(PropVal);
-            Att = Which(Unquoted, AttName, 1, MaxAtt);
-            if (!Att || Exclude(Att))
-            {
-                Error(MODELFILE, E_MFATT, Unquoted);
-            }
-            break;
-
-        case ELTSP:
-            MaxAttVal[Att] = 1;
-            AttValName[Att][1] = strdup("N/A");
-
-            for (p = PropVal; *p;)
-            {
-                p = RemoveQuotes(p);
-                v = ++MaxAttVal[Att];
-                AttValName[Att][v] = strdup(p);
-
-                for (p += strlen(p); *p != '"'; p++)
-                    ;
-                p++;
-                if (*p == ',') p++;
-            }
-            AttValName[Att][MaxAttVal[Att] + 1] = "<other>";
-            break;
-
-        case ENTRIESP:
-            sscanf(PropVal, "\"%d\"", &TRIALS);
-            Entry = 0;
-            return;
-        }
-    }
-}
-
-
-/*************************************************************************/
-/*									 */
-/*	Read header information and decide whether model files are	 */
-/*	in ASCII or binary format					 */
-/*									 */
-/*************************************************************************/
-
-
-void PredictReadFilePrefix(String Extension)
-/*   --------------  */
-{
-#if defined WIN32 || defined _CONSOLE
-    if (!(TRf = GetFile(Extension, "rb"))) Error(NOFILE, Fn, "");
-#else
-    if (!(TRf = GetFile(Extension, "r"))) Error(NOFILE, Fn, "");
-#endif
-
-    StreamIn((char *)&TRIALS, sizeof(int));
-    if (memcmp((char *)&TRIALS, "id=", 3) != 0)
-    {
-        BINARY = true;
-        BinRecoverDiscreteNames();
-    }
-    else
-    {
-        BINARY = false;
-        rewind(TRf);
-        PredictReadHeader();
-    }
+void modelfilesfreeglobals(void) {
+    FreeUnlessNil(PropVal);				PropVal = Nil;
+							PropValSize = 0;
 }
 
 
@@ -267,8 +125,6 @@ void PredictReadFilePrefix(String Extension)
 void CheckFile(String Extension, Boolean Write)
 /*   ---------  */
 {
-    static char	*LastExt="";
-
     if ( ! TRf || strcmp(LastExt, Extension) )
     {
 	LastExt = Extension;
@@ -369,13 +225,82 @@ void ReadFilePrefix(String Extension)
     StreamIn((char *) &TRIALS, sizeof(int));
     if ( memcmp((char *) &TRIALS, "id=", 3) != 0 )
     {
-	printf("\nCannot read old format classifiers\n");
-	exit(1);
+	Error(OLDFORMAT, "\nCannot read old format classifiers\n" ,"");
     }
     else
     {
 	rewind(TRf);
 	ReadHeader();
+    }
+}
+
+/*************************************************************************/
+/*									 */
+/*	Recover attribute values read with "discrete N"			 */
+/*									 */
+/*************************************************************************/
+
+
+void BinRecoverDiscreteNames()
+/*   -----------------------  */
+{
+    Attribute	Att;
+    DiscrValue	v;
+    int		Length;
+
+    ForEach(Att, 1, MaxAtt)
+    {
+	if ( ! StatBit(Att, DISCRETE) ) continue;
+
+	StreamIn((char *) &MaxAttVal[Att], sizeof(int));
+
+	/*  Insert "N/A"  */
+
+	AttValName[Att][1] = strdup("N/A");
+	MaxAttVal[Att]++;
+
+	ForEach(v, 2, MaxAttVal[Att])
+	{
+	    StreamIn((char *) &Length, sizeof(int));
+
+	    AttValName[Att][v] = Alloc(Length, char);
+	    StreamIn(AttValName[Att][v], Length);
+	}
+
+	/*  Invisible name for undefined values  */
+
+	AttValName[Att][MaxAttVal[Att]+1] = "<other>";
+    }
+}
+
+/*************************************************************************/
+/*									 */
+/*	Read header information and decide whether model files are	 */
+/*	in ASCII or binary format					 */
+/*									 */
+/*************************************************************************/
+
+
+void PredictReadFilePrefix(String Extension)
+/*   --------------  */
+{
+#if defined WIN32 || defined _CONSOLE
+    if ( ! (TRf = GetFile(Extension, "rb")) ) Error(NOFILE, Fn, "");
+#else
+    if ( ! (TRf = GetFile(Extension, "r")) ) Error(NOFILE, Fn, "");
+#endif
+
+    StreamIn((char *) &TRIALS, sizeof(int));
+    if ( memcmp((char *) &TRIALS, "id=", 3) != 0 )
+    {
+	BINARY = true;
+	BinRecoverDiscreteNames();
+    }
+    else
+    {
+	BINARY = false;
+	rewind(TRf);
+	PredictReadHeader();
     }
 }
 
@@ -694,6 +619,76 @@ void ReadHeader()
     }
 }
 
+void PredictReadHeader()
+/*   ---------  */
+{
+    Attribute	Att;
+    DiscrValue	v;
+    char	*p, Dummy;
+    int		Year, Month, Day;
+    FILE	*F;
+
+    while ( true )
+    {
+	switch ( ReadProp(&Dummy) )
+	{
+	    case ERRORP:
+		return;
+
+	    case IDP:
+		/*  Recover year run and set base date for timestamps  */
+
+		if ( sscanf(PropVal + strlen(PropVal) - 11,
+			    "%d-%d-%d\"", &Year, &Month, &Day) == 3 )
+		{
+		    SetTSBase(Year);
+		}
+		break;
+
+	    case COSTSP:
+		/*  Recover costs file used to generate model  */
+
+		if ( (F = GetFile(".costs", "r")) )
+		{
+		    PredictGetMCosts(F);
+		}
+		break;
+
+	    case ATTP:
+		Unquoted = RemoveQuotes(PropVal);
+		Att = Which(Unquoted, AttName, 1, MaxAtt);
+		if ( ! Att || Exclude(Att) )
+		{
+		    Error(MODELFILE, E_MFATT, Unquoted);
+		}
+		break;
+
+	    case ELTSP:
+		MaxAttVal[Att] = 1;
+		AttValName[Att][1] = strdup("N/A");
+
+		for ( p = PropVal ; *p ; )
+		{
+		    p = RemoveQuotes(p);
+		    v = ++MaxAttVal[Att];
+		    AttValName[Att][v] = strdup(p);
+
+		    for ( p += strlen(p) ; *p != '"' ; p++ )
+			;
+		    p++;
+		    if ( *p == ',' ) p++;
+		}
+		AttValName[Att][MaxAttVal[Att]+1] = "<other>";
+		break;
+
+	    case ENTRIESP:
+		sscanf(PropVal, "\"%d\"", &TRIALS);
+		Entry = 0;
+		return;
+	}
+    }
+}
+
 /*************************************************************************/
 /*									 */
 /*	Retrieve tree from saved characters				 */
@@ -788,7 +783,6 @@ Tree GetTree(String Extension)
 
     return ( BINARY ? BinInTree() : InTree() );
 }
-
 
 
 Tree InTree()
@@ -995,7 +989,6 @@ CRuleSet GetRules(String Extension)
 	return ( BINARY ? BinInRules() : InRules() );
     }
 }
-
 
 
 CRuleSet InRules()
@@ -1273,17 +1266,3 @@ Set MakeSubset(Attribute Att)
     return S;
 }
 
-
-
-/*************************************************************************/
-/*								  	 */
-/*	Character stream read for binary routines			 */
-/*								  	 */
-/*************************************************************************/
-
-
-//void StreamIn(String S, int n)
-///*   --------  */
-//{
-//    while ( n-- ) *S++ = getc(TRf);
-//}

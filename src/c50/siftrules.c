@@ -1,7 +1,6 @@
 /*************************************************************************/
 /*									 */
 /*  Copyright 2010 Rulequest Research Pty Ltd.				 */
-/*  Author: Ross Quinlan (quinlan@rulequest.com) [Rev Jan 2016]		 */
 /*									 */
 /*  This file is part of C5.0 GPL Edition, a single-threaded version	 */
 /*  of C5.0 release 2.07.						 */
