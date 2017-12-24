@@ -3,6 +3,7 @@
 //===================================================================
 
 #include <stdio.h>
+#include <string.h>
 #include "c50_LibEntry.h"
 #include "./Rbased/strbuf.h"
 #include "./Rbased/rulebasedmodels.h"
@@ -95,10 +96,11 @@ void c50(const char **namesv,
         // Real work is done here
         // Rprintf("Calling c50main\n");
         if (c50main() != 0) {
+            // Close file object "Of", and return its contents via argument outputv
             char *outputString = closeOf();
-            // char *output = calloc(strlen(outputString) + 1, sizeof(char));
+            char *output = strdup(outputString); // calloc(strlen(outputString) + 1, sizeof(char));
             // strcpy(&output, &outputString);
-            *outputv = outputString;
+            *outputv = output;
             return;
         }
 
@@ -110,11 +112,12 @@ void c50(const char **namesv,
             STRBUF *treebuf = rbm_lookup("undefined.tree");
             if (treebuf != NULL) {
                 char *treeString = strbuf_getall(treebuf);
-                // char *treeObj = calloc(strlen(treeString) + 1, sizeof(char));
-                // strcpy(&treeObj, &treeString);
+                // int length = strlen(treeString);
+                char *treeObj = strdup(treeString); // (char*)malloc((length + 1));
+                // strcpy(treeObj, treeString);
 
                 // I think the previous value of *treev will be garbage collected
-                *treev = treeString;
+                *treev = treeObj;
             }
             else {
                 // XXX Should *treev be assigned something in this case?
@@ -126,11 +129,11 @@ void c50(const char **namesv,
             STRBUF *rulesbuf = rbm_lookup("undefined.rules");
             if (rulesbuf != NULL) {
                 char *rulesString = strbuf_getall(rulesbuf);
-                // char *rulesObj = calloc(strlen(rulesString) + 1, sizeof(char));
+                char *rulesObj = strdup(rulesString);  //calloc(strlen(rulesString) + 1, sizeof(char));
                 // strcpy(&rulesObj, &rulesString);
 
                 // I think the previous value of *rulesv will be garbage collected
-                *rulesv = rulesString;
+                *rulesv = rulesObj;
             }
             else {
                 // XXX Should *rulesv be assigned something in this case?
@@ -144,9 +147,9 @@ void c50(const char **namesv,
 
     // Close file object "Of", and return its contents via argument outputv
     char *outputString = closeOf();
-    // char *output = calloc(strlen(outputString) + 1, sizeof(char));
+    char *output = strdup(outputString); // calloc(strlen(outputString) + 1, sizeof(char));
     // strcpy(&output, &outputString);
-    *outputv = outputString;
+    *outputv = output;
 
     // Deallocates memory allocated by NewCase
     FreeCases();
@@ -243,8 +246,8 @@ void predictions(const char **casev,
 
     // Close file object "Of", and return its contents via argument outputv
     char *outputString = closeOf();
-    char *output = calloc(strlen(outputString) + 1, 1);
-    strcpy(output, outputString);
+    char *output = strdup(outputString);// calloc(strlen(outputString) + 1, 1);
+    // strcpy(output, outputString);
     *outputv = output;
 
     // We reinitialize the globals on exit out of general paranoia

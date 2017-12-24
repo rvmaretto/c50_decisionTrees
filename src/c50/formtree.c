@@ -197,16 +197,23 @@ void FreeTreeData()
     Attribute	Att;
     DiscrValue	vMax;
 
-    FreeUnlessNil(Raw);					Raw = Nil;
-    FreeUnlessNil(Pruned);				Pruned = Nil;
+  FreeUnlessNil(Raw);
+  Raw = Nil;
+  FreeUnlessNil(Pruned);
+  Pruned = Nil;
 
-    FreeUnlessNil(Tested);				Tested = Nil;
+  FreeUnlessNil(Tested);
+  Tested = Nil;
 
-    FreeUnlessNil(Gain);				Gain = Nil;
-    FreeUnlessNil(Info);				Info = Nil;
-    FreeUnlessNil(Bar);					Bar = Nil;
+  FreeUnlessNil(Gain);
+  Gain = Nil;
+  FreeUnlessNil(Info);
+  Info = Nil;
+  FreeUnlessNil(Bar);
+  Bar = Nil;
 
-    FreeUnlessNil(EstMaxGR);				EstMaxGR = Nil;
+  FreeUnlessNil(EstMaxGR);
+  EstMaxGR = Nil;
 
     if ( SUBSET )
     {

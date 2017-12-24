@@ -1040,20 +1040,20 @@ float PredictInterpolate(Tree T, ContValue Val)
 void FreeClassifier(int Trial)
 /*   --------------  */
 {
-    if ( Raw )
-    {
-	FreeTree(Raw[Trial]);				Raw[Trial] = Nil;
-    }
+  if (Raw) {
+    FreeTree(Raw[Trial]);
+    Raw[Trial] = Nil;
+  }
 
-    if ( Pruned )
-    {
-	FreeTree(Pruned[Trial]);			Pruned[Trial] = Nil;
-    }
+  if (Pruned) {
+    FreeTree(Pruned[Trial]);
+    Pruned[Trial] = Nil;
+  }
 
-    if ( RULES && RuleSet && RuleSet[Trial] )
-    {
-	FreeRules(RuleSet[Trial]);			RuleSet[Trial] = Nil;
-    }
+  if (RULES && RuleSet && RuleSet[Trial]) {
+    FreeRules(RuleSet[Trial]);
+    RuleSet[Trial] = Nil;
+  }
 }
 
 /*************************************************************************/
@@ -1070,13 +1070,11 @@ double MisclassCost(double *LocalFreq, ClassNo C)
     double	ExpCost=0;
     ClassNo	c;
 
-    ForEach(c, 1, MaxClass)
-    {
-	if ( c != C )
-	{
+  ForEach(c, 1, MaxClass) {
+    if (c != C) {
 	    ExpCost += LocalFreq[c] * MCost[C][c];
 	}
-    }
+  }
 
     return ExpCost;
 }

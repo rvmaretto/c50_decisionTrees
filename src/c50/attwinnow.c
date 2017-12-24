@@ -78,16 +78,12 @@ void WinnowAtts()
 
     Bp = 0;
     Ep = MaxCase;
-    ForEach(i, 0, MaxCase)
-    {
+  ForEach(i, 0, MaxCase) {
 	c = Class(SaveCase[i]);
 
-	if ( Upper[c] )
-	{
+    if (Upper[c]) {
 	    Case[Ep--] = SaveCase[i];
-	}
-	else
-	{
+    } else {
 	    Case[Bp++] = SaveCase[i];
 	}
 
@@ -107,13 +103,11 @@ void WinnowAtts()
 
     /*  Remove attributes when doing so would reduce error cost  */
 
-    ForEach(Att, 1, MaxAtt)
-    {
-	if ( AttImp[Att] < 0 )
-	{
-	    SpecialStatus[Att] ^= SKIP;
-	    Removed++;
-	}
+  ForEach(Att, 1, MaxAtt) {
+        if (AttImp[Att] < 0) {
+	        SpecialStatus[Att] ^= SKIP;
+	        Removed++;
+	    }
     }
 
     /*  If any removed, rebuild tree and reinstate if error increases  */
