@@ -10,7 +10,7 @@ void c50(const char **namesv, const char **datav, const char **costv, int *subse
     int *trials, int *winnow, double *sample, int *seed, int *noGlobalPruning, double *CF,
     int *minCases, int *fuzzyThreshold, int *earlyStopping, char **treev, char **rulesv, char **outputv);
 
-void predictions(const char **casev, const char **namesv, char **treev, char **rulesv,
-    const char **costv,
+void predictions(char **casev, char **namesv, char **treev, char **rulesv,
+    char **costv,
     int *predv,  /* XXX predictions are character */ double *confidencev, int *trials, char **outputv);
 #endif  // C50_LIBENTRY_H_

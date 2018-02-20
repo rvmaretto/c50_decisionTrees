@@ -158,11 +158,11 @@ void c50(const char **namesv,
     initglobals();
 }
 
-void predictions(const char **casev,
-    const char **namesv,
+void predictions(char **casev,
+    char **namesv,
     char **treev,
     char **rulesv,
-    const char **costv,
+    char **costv,
     int *predv,  /* XXX predictions are character */
     double *confidencev,
     int *trials,
@@ -252,4 +252,12 @@ void predictions(const char **casev,
 
     // We reinitialize the globals on exit out of general paranoia
     initglobals();
+
+    // Announce ourselves for testing
+    printf("------------------------\n");
+    printf("End of the method\n");
+
+    printf("Output: \n");
+    printf(*outputv);
+    printf("\n---------------------------------\n");
 }
