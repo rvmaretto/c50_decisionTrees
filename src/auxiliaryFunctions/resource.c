@@ -10,9 +10,16 @@
 
 // File based on http://www.zemris.fer.hr/~leonardo/os/math/labosi/pripreme/upute/misc/Unix2Win.htm
 
-#include   <windows.h>
+#if defined(__WINDOWS__)
+  #include   <windows.h>
+#endif
+
 #include   "resource.h"
-#include   <io.h>
+
+#if defined(__WINDOWS__)
+  #include   <io.h>
+#endif
+
 #include   <errno.h>
 
 static BOOL     rInitialized = FALSE;       // Indicates if the rlimit structure has been initialized
@@ -176,40 +183,42 @@ size_t rfwrite(const void *buffer, size_t size, size_t count, FILE *stream) {
 //
 //
 ///////////////////////////////////////////////////////////////int
-_rwrite(int handle, const void *buffer, unsigned int count)
-{
-    long            position;
-    DWORD           dwWritten;
-    _int64          liByteCount,
-        liPosition;
-    //
-    // Convert the count to a large integer
-    //
-    liByteCount = (__int64)count;
+#if defined(__WINDOWS__)
+  _rwrite(int handle, const void *buffer, unsigned int count)
+  {
+      long            position;
+      DWORD           dwWritten;
+      _int64          liByteCount,
+          liPosition;
+      //
+      // Convert the count to a large integer
+      //
+      liByteCount = (__int64)count;
 
-    //
-    // Get the Current file position
-    //
-    position = _tell(handle);
-    liPosition = (__int64)position;
+      //
+      // Get the Current file position
+      //
+      position = _tell(handle);
+      liPosition = (__int64)position;
 
-    //
-    // Check to make sure the write will not exceed the RLIMIT_FSIZE limit.
-        //
-    if ((liPosition + liByteCount) > rlimits[RLIMIT_FSIZE].rlim_cur
-        )
-    {
-        //
-        // report an error
-        //
-        dwWritten = 0;
-    }
-    else
-    {
-        //
-        // Do the actual write the user requested
-        //
-        dwWritten = _write(handle, buffer, count);
-    }
-    return dwWritten;
-}
+      //
+      // Check to make sure the write will not exceed the RLIMIT_FSIZE limit.
+          //
+      if ((liPosition + liByteCount) > rlimits[RLIMIT_FSIZE].rlim_cur
+          )
+      {
+          //
+          // report an error
+          //
+          dwWritten = 0;
+      }
+      else
+      {
+          //
+          // Do the actual write the user requested
+          //
+          dwWritten = _write(handle, buffer, count);
+      }
+      return dwWritten;
+  }
+#endif

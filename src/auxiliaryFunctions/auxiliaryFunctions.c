@@ -2,6 +2,8 @@
 // Based on C5.0 GPL Edition provided by Rulequest Research Pty Ltd.
 //===================================================================
 
+#include "auxiliaryFunctions.h"
+
 #ifdef WIN32
 #include <windows.h>
 #include <direct.h>
@@ -11,7 +13,11 @@
 #include <sys/time.h>
 #endif
 
-#include "auxiliaryFunctions.h"
+/* solving rlimits */
+#if defined(__unix__)
+  #include <sys/time.h>
+  #include <sys/resource.h>
+#endif
 
 double GetSystemClock() {
 #ifdef WIN32
@@ -38,6 +44,7 @@ void SetRunTimeStackSize(unsigned long int iValue_KB) {
         ErrorExit(TEXT("SetThreadStackGuarantee"));
     }
 #else
+    struct rlimit RL;
     getrlimit(RLIMIT_STACK, &RL);
     RL.rlim_cur = Max(RL.rlim_cur, iValue_KB * 1024);
     if (RL.rlim_max > 0) { /* -1 if unlimited */

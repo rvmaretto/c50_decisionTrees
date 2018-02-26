@@ -738,10 +738,17 @@ void CheckValue(DataRec DVec, Attribute Att)
     ContValue	Cv;
 
     Cv = CVal(DVec, Att);
-    if ( ! _finite(Cv) )
-    {
-	Error(BADNUMBER, AttName[Att], "");
 
-	CVal(DVec, Att) = UNKNOWN;
-    }
+    #if defined(__WINDOWS__)
+      if ( ! _finite(Cv) )
+    #elif defined(__unix__)
+      if ( ! finite(Cv) )
+    #else
+      #error "Invalid platform"
+    #endif
+      {
+        Error(BADNUMBER, AttName[Att], "");
+
+        CVal(DVec, Att) = UNKNOWN;
+      }
 }

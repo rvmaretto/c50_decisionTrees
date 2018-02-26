@@ -5,6 +5,8 @@
 #ifndef AUXILIARYFUNCTIONS_H_
 #define AUXILIARYFUNCTIONS_H_
 
+#include "defns.h"
+
 double GetSystemClock();
 
 void SetRunTimeStackSize(unsigned long int iValue_KB);

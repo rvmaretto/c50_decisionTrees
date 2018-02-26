@@ -36,7 +36,15 @@
 #include "extern.h"
 #include <signal.h>
 
-#include <io.h>
+#if defined(__WINDOWS__)
+  #include <io.h>
+#endif
+
+#if defined(__linux__)
+  #include <sys/time.h>
+  #include <sys/resource.h>
+#endif
+
 #include <time.h>
 #include "../auxiliaryFunctions/resource.h"
 #include "../auxiliaryFunctions/auxiliaryFunctions.h"

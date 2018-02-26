@@ -201,9 +201,19 @@ void EvalSubset(Attribute Att, CaseCount Cases)
     {
 	PrevInfo = TotalInfo(GEnv.ValFreq, 0, GEnv.Blocks) / Cases;
 
-	Penalty  = ( _finite(Bell[InitialBlocks][GEnv.Blocks]) ?
-			Log(Bell[InitialBlocks][GEnv.Blocks]) :
-			(InitialBlocks-GEnv.Blocks+1) * Log(GEnv.Blocks) );
+  #if defined(__WINDOWS__)
+    Penalty  = ( _finite(Bell[InitialBlocks][GEnv.Blocks]) ?
+        Log(Bell[InitialBlocks][GEnv.Blocks]) :
+        (InitialBlocks-GEnv.Blocks+1) * Log(GEnv.Blocks) );
+  #elif defined(__unix__)
+    Penalty  = ( finite(Bell[InitialBlocks][GEnv.Blocks]) ?
+        Log(Bell[InitialBlocks][GEnv.Blocks]) :
+        (InitialBlocks-GEnv.Blocks+1) * Log(GEnv.Blocks) );
+  #else
+    #error "Invalid platform"
+  #endif
+
+
 
 	Val = (PrevGain - Penalty / Cases) / PrevInfo;
 	Better = ( GEnv.Blocks >= 2 && GEnv.ReasonableSubsets >= 2 &&
@@ -302,9 +312,20 @@ void EvalSubset(Attribute Att, CaseCount Cases)
 	/*  Determine penalty as log of Bell number.  If number is too
 	    large, use an approximation of log  */
 
-	Penalty  = ( _finite(Bell[InitialBlocks][GEnv.Blocks-1]) ?
-			Log(Bell[InitialBlocks][GEnv.Blocks-1]) :
-			(InitialBlocks-GEnv.Blocks+1) * Log(GEnv.Blocks-1) );
+
+  #if defined(__WINDOWS__)
+    Penalty  = ( _finite(Bell[InitialBlocks][GEnv.Blocks-1]) ?
+        Log(Bell[InitialBlocks][GEnv.Blocks-1]) :
+        (InitialBlocks-GEnv.Blocks+1) * Log(GEnv.Blocks-1) );
+  #elif defined(__unix__)
+    Penalty  = ( finite(Bell[InitialBlocks][GEnv.Blocks-1]) ?
+        Log(Bell[InitialBlocks][GEnv.Blocks-1]) :
+        (InitialBlocks-GEnv.Blocks+1) * Log(GEnv.Blocks-1) );
+  #else
+    #error "Invalid platform"
+  #endif
+
+
 
 	Val = (BestGain - Penalty / Cases) / BestInfo;
 
