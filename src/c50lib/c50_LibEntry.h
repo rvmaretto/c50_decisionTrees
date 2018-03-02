@@ -2,10 +2,11 @@
 // Based on C5.0 GPL Edition provided by Rulequest Research Pty Ltd.
 //===================================================================
 
-#include "c50_main.h"
-
 #ifndef C50_LIBENTRY_H_
 #define C50_LIBENTRY_H_
+
+#include "c50_main.h"
+
 void c50(char **namesv, char **datav, char **costv, int *subset, int *rules, int *utility,
     int *trials, int *winnow, double *sample, int *seed, int *noGlobalPruning, double *CF,
     int *minCases, int *fuzzyThreshold, int *earlyStopping, char **treev, char **rulesv, char **outputv);

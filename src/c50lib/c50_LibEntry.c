@@ -170,26 +170,8 @@ void predictions(char **casev,
     int val;  /* Used by setjmp/longjmp for implementing rbm_exit */
 
     // Announce ourselves for testing
-    printf("------------------------\n");
-    printf("predictions called\n");
-
-    printf("\n---------------------------------\n");
-    printf("Cases: \n");
-    printf(*casev);
-
-    printf("\n---------------------------------\n");
-    printf("Names: \n");
-    printf(*namesv);
-
-    printf("\n---------------------------------\n");
-    printf("Tree: \n");
-    printf(*treev);
-
-    printf("\n---------------------------------\n");
-    printf("Costs: \n");
-    printf(*costv);
-
-    printf("\n---------------------------------\n");
+    /*printf("------------------------\n");
+    printf("predictions called\n");*/
 
     // Initialize the globals
     initglobals();
@@ -268,10 +250,6 @@ void predictions(char **casev,
     initglobals();
 
     // Announce ourselves for testing
-    printf("------------------------\n");
-    printf("End of the method\n");
-
-    printf("Output: \n");
-    printf(*outputv);
-    printf("\n---------------------------------\n");
+    /*printf("------------------------\n");
+    printf("End of the method\n");*/
 }
