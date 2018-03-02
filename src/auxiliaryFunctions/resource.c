@@ -10,13 +10,13 @@
 
 // File based on http://www.zemris.fer.hr/~leonardo/os/math/labosi/pripreme/upute/misc/Unix2Win.htm
 
-#if defined(__WINDOWS__)
+#if defined(_WIN32)
   #include   <windows.h>
 #endif
 
 #include   "resource.h"
 
-#if defined(__WINDOWS__)
+#if defined(_WIN32)
   #include   <io.h>
 #endif
 
@@ -183,7 +183,7 @@ size_t rfwrite(const void *buffer, size_t size, size_t count, FILE *stream) {
 //
 //
 ///////////////////////////////////////////////////////////////int
-#if defined(__WINDOWS__)
+#if defined(_WIN32)
   _rwrite(int handle, const void *buffer, unsigned int count)
   {
       long            position;

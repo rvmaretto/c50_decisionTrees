@@ -5,13 +5,13 @@
 #include <stdio.h>
 #include <string.h>
 #include "c50_LibEntry.h"
-#include "./Rbased/strbuf.h"
-#include "./Rbased/rulebasedmodels.h"
-#include "./Rbased/redefine.h"
+#include "./c50/strbuf.h"
+#include "./c50/rulebasedmodels.h"
+#include "./c50/redefine.h"
 
-void c50(const char **namesv,
-    const char **datav,
-    const char **costv,
+void c50(char **namesv,
+    char **datav,
+    char **costv,
     int *subset,
     int *rules,
     int *utility,
@@ -173,8 +173,22 @@ void predictions(char **casev,
     printf("------------------------\n");
     printf("predictions called\n");
 
+    printf("\n---------------------------------\n");
+    printf("Cases: \n");
+    printf(*casev);
+
+    printf("\n---------------------------------\n");
+    printf("Names: \n");
+    printf(*namesv);
+
+    printf("\n---------------------------------\n");
     printf("Tree: \n");
     printf(*treev);
+
+    printf("\n---------------------------------\n");
+    printf("Costs: \n");
+    printf(*costv);
+
     printf("\n---------------------------------\n");
 
     // Initialize the globals

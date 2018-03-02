@@ -36,7 +36,7 @@
 
 
 // solving rlimits
-#if defined(__WINDOWS__)
+#if defined(_WIN32)
   #define RLIMIT_CPU      0   /* limit on CPU time per process */
   #define RLIMIT_FSIZE    1   /* limit on file size */
   #define RLIMIT_DATA     2   /* limit on data segment size */
@@ -73,7 +73,7 @@ int setrlimit(int resource, const struct rlimit *);
 size_t rfwrite(const void *buffer, size_t size, size_t count, FILE
     *stream);
 
-#if defined(__WINDOWS__)
+#if defined(_WIN32)
   int _rwrite(int handle, const void *buffer, unsigned int count);
 #endif
 

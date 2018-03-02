@@ -5,7 +5,7 @@
 #ifndef AUXILIARYFUNCTIONS_H_
 #define AUXILIARYFUNCTIONS_H_
 
-#include "defns.h"
+#include "../c50/defns.h"
 
 double GetSystemClock();
 

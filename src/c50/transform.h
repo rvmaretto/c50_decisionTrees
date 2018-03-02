@@ -22,6 +22,9 @@
 #define fwrite(X, Y, Z, A) rbm_fwrite(X, Y, Z, A)
 #define remove(X) rbm_remove(X)
 
-// #define exit(X) rbm_exit(X)
+#define exit(X) rbm_exit(X)
+
+// #define printf Rprintf
+#define puts(X) printf("%s", X)
 
 #endif

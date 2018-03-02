@@ -6,7 +6,7 @@
 
 #ifndef C50_LIBENTRY_H_
 #define C50_LIBENTRY_H_
-void c50(const char **namesv, const char **datav, const char **costv, int *subset, int *rules, int *utility,
+void c50(char **namesv, char **datav, char **costv, int *subset, int *rules, int *utility,
     int *trials, int *winnow, double *sample, int *seed, int *noGlobalPruning, double *CF,
     int *minCases, int *fuzzyThreshold, int *earlyStopping, char **treev, char **rulesv, char **outputv);
 
