@@ -380,7 +380,7 @@ Must expect at least 10 of least prevalent class  */
 
   /*  Decide whether to branch or not  */
 
-  if (BestAtt == None) {
+  if (BestAtt == None_) {
     Verbosity(1, fprintf(Of, "\tno sensible splits\n")) if (Now == FORMTREE)
         Progress(Cases);
   } else {
@@ -444,7 +444,7 @@ void SampleEstimate(CaseNo Fp, CaseNo Lp, CaseCount Cases)
   /*  Phase 1: evaluate all discrete attributes and record best GR  */
 
   ForEach(Att, 1, MaxAtt) {
-    Gain[Att] = None;
+    Gain[Att] = None_;
 
     if (Discrete(Att)) {
       EvalDiscrSplit(Att, Cases);
@@ -548,7 +548,7 @@ Attribute ChooseSplit(CaseNo Fp, CaseNo Lp, CaseCount Cases, Boolean Sampled)
     }
   } else {
     for (Att = MaxAtt; Att > 0; Att--) {
-      Gain[Att] = None;
+      Gain[Att] = None_;
 
       if (Skip(Att) || Att == ClassAtt) {
         continue;
@@ -616,14 +616,14 @@ Attribute FindBestAtt(CaseCount Cases)
       Possible++;
       AvGain += Gain[Att];
     } else {
-      Gain[Att] = None;
+      Gain[Att] = None_;
     }
   }
 
   /*  Set threshold on minimum gain  */
 
   if (!Possible)
-    return None;
+    return None_;
 
   AvGain /= Possible;
   MDL = Log(Possible) / Cases;
@@ -636,7 +636,7 @@ Attribute FindBestAtt(CaseCount Cases)
    to threshold on minimum gain  */
 
       BestVal = -Epsilon;
-  BestAtt = None;
+  BestAtt = None_;
 
   ForEach(Att, 1, MaxAtt) {
     if (Gain[Att] >= 0.999 * MinGain && Info[Att] > 0) {
@@ -669,7 +669,7 @@ void EvalDiscrSplit(Attribute Att, CaseCount Cases)
 {
   DiscrValue v, NBr;
 
-  Gain[Att] = None;
+  Gain[Att] = None_;
 
   if (Skip(Att) || Att == ClassAtt)
     return;
@@ -698,7 +698,7 @@ void EvalDiscrSplit(Attribute Att, CaseCount Cases)
     Verbosity(
         2, fprintf(Of, "\t(cancelled -- %d leaves, max %d)\n", NBr, MaxLeaves))
 
-        Gain[Att] = None;
+        Gain[Att] = None_;
   }
 }
 

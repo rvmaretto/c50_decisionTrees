@@ -58,7 +58,7 @@ void EvalContinuousAtt(Attribute Att, CaseNo Fp, CaseNo Lp)
 
   Verbosity(3, fprintf(Of, "\tAtt %s\n", AttName[Att]))
 
-      Gain[Att] = None;
+      Gain[Att] = None_;
   PrepareForContin(Att, Fp, Lp);
 
   /*  Special case when very few known values  */

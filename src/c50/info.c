@@ -51,7 +51,7 @@ double ComputeGain(double BaseInfo, float UnknFrac, DiscrValue MaxVal,
   /*  Check whether all values are unknown or the same  */
 
   if (!TotalCases)
-    return None;
+    return None_;
 
   /*  Compute total info after split, by summing the
 info of each of the subsets formed by the test  */
